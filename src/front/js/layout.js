@@ -8,9 +8,13 @@ import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 import { Login } from "./pages/login.jsx";
-
+import Details from "./pages/detallesdecasas";
+import Detailsventas from "./pages/detalle_casas_venta";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import Perfil from "./pages/perfilUsuario";
+import { Upload } from "./pages/Upload.jsx";
+
 
 //create your first component
 const Layout = () => {
@@ -18,7 +22,7 @@ const Layout = () => {
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
@@ -32,6 +36,10 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<Singup />} path="/signup" />
+                        <Route element={<Details />} path="/details/:id" />
+                        <Route element={<Upload />} path="/upload" />
+                        <Route element={<Detailsventas />} path="/detailsventas/:id" />
+                        <Route element={<Perfil />} path="/perfil" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>

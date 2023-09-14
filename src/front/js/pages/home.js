@@ -4,20 +4,22 @@ import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { CardFeedVen } from "../component/card_feed_ven.jsx"
 import { CardFeedAlq } from "../component/card_feed_alq.jsx"
+import { PanelCtrl } from "../component/panel_control.jsx";
+
 
 export const Home = () => {
-	const { store, actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const [login, setLogin] = useState("show active")
     const [loginST, setLoginST] = useState("active")
-	const [register, setRegister] = useState("")
+    const [register, setRegister] = useState("")
     const [registerST, setRegisterST] = useState("")
 
     useEffect(() => {
-		actions.getAlquileres()
-		actions.getVentas()
-	}, [])
+        actions.getAlquileres()
+        actions.getVentas()
+    }, [])
 
-    
+
     function alquileres() {
         if (login == "") {
             setLogin("show active")
@@ -37,7 +39,7 @@ export const Home = () => {
     }
 
     return (
-        <div className="text-white p-5">
+        <div className="text-white p-5 my-3">
             <ul className="nav nav-pills nav-justified mb-5" id="ex1" role="tablist">
                 <li className="nav-item" role="presentation">
                     <h2 className={"nav-link " + loginST} id="tab-login" data-mdb-toggle="pill" href="#pills-login" role="tab"
@@ -50,22 +52,26 @@ export const Home = () => {
             </ul>
             <div className="row d-flex tab-content">
                 <div className={"tab-pane fade " + login} id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                {store.alquileres.map((item, index) => {
-					return (
-                    <div key={index} className="">
-                        <CardFeedAlq className="col-3" ubicacion={item.location} precio={item.price}/>
-                    </div>
-                    )})}
+                    {store.alquileres.map((item, index) => {
+                        return (
+                            <div key={index} className="row ">
+                                <CardFeedAlq className="col-4" ubicacion={item.location} precio={item.price} id={item.id} imageUrl={item.image_url} />
+                            </div>
+                        )
+                    })}
                 </div>
                 <div className={"tab-pane fade " + register} id="pills-register" role="tabpanel" aria-labelledby="tab-register">
-                {store.ventas.map((item, index) => {
-					return (
-                    <div key={index} className="">
-                        <CardFeedVen ubicacion={item.location} precio={item.price}/>
-                    </div>
-                    )})}
+                    {store.ventas.map((item, index) => {
+                        return (
+                            <div key={index} className="row">
+                                <CardFeedVen className="col-4" ubicacion={item.location} precio={item.price} id={item.id} imageUrl={item.image_url} />
+                            </div>
+                        )
+                    })}
                 </div>
-            </div>
-        </div>
+            </div>{
+                store.auth ?
+                    <PanelCtrl /> : null
+            }</div>
     );
 };

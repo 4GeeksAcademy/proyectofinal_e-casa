@@ -28,3 +28,25 @@ body{
 .bg-celeste-claro{
     background-color: #f2f7ff;
 }
+.duenio{
+    display: contents;
+    
+    color: black;
+}
+.registro{
+    font-size: smaller;
+    color: gray;
+}
+.detalle{
+    color: gray;
+    font-size: smaller;
+}
+.disponible{
+    color: gray;
+    text-decoration:underline;
+}
+.cuerpo{
+    justify-content: center;
+}
+
+

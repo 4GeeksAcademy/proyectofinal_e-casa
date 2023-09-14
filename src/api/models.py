@@ -10,8 +10,10 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     phone_number = db.Column(db.String(30), nullable=False)
-    account_creation_date = db.Column(db.String(40), nullable=False)
+    account_creation_date = db.Column(db.String(40), nullable=True)
     is_admin = db.Column(db.Boolean(), nullable=False)
+    
+    houses = db.relationship('House', backref='user', lazy=True)
 
 
     def __repr__(self):
@@ -34,6 +36,7 @@ class User(db.Model):
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(150), nullable=False)
+    house_id = db.Column(db.Integer, db.ForeignKey('house.id'))
 
     def __repr__(self):
         return f'<Image {self.id}>'
@@ -48,8 +51,9 @@ class Image(db.Model):
 class House(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
     category = db.Column(db.String(10), nullable=False)
-    image_id = db.Column(db.Integer, db.ForeignKey('image.id'))
+    image_url = db.Column(db.String(300), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     location = db.Column(db.String(150), nullable=False)
     number_of_rooms = db.Column(db.Integer, nullable=False)
@@ -59,7 +63,7 @@ class House(db.Model):
     virified_account = db.Column(db.Boolean(), nullable=False)
     price = db.Column(db.Integer, nullable=False)
 
-#    image = db.relationship(Image, backref='house')
+    # image = db.relationship(Image, backref='house')
 
     def __repr__(self):
         return f'<House {self.id}>'
@@ -68,8 +72,9 @@ class House(db.Model):
         return {
             "id": self.id,
             "title": self.title,
+            "description": self.description,
             "category": self.category,
-            "image_id": self.image_id,
+            "image_url": self.image_url,
             "user_id": self.user_id,
             "location": self.location,
             "numberOfRooms": self.number_of_rooms,
