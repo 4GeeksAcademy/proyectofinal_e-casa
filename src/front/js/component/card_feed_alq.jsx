@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export const CardFeedAlq = (props) => {
     return (
-        <div style={{ width: "18rem" }}>
+        <div className="col-4" style={{ width: "18rem" }}>
             <img src="https://www.decorablog.com/wp-content/2011/06/Casa-lujosa-Singapur-3.jpg" className="card-img-top" alt="..." />
             <div className="azul-oscuro mb-5">
                 <div className="d-flex justify-content-between">

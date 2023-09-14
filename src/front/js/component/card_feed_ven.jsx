@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export const CardFeedVen = (props) => {
     return (
-        <div style={{width: "18rem"}}>
+        <div className="col-4" style={{width: "18rem"}}>
             <img src={casaImg} className="card-img-top" alt="..."/>
             <div className="azul-oscuro mb-5">
                 <div className="d-flex justify-content-between">

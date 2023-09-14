@@ -48,26 +48,24 @@ export const Home = () => {
                         aria-controls="pills-register" aria-selected="false" onClick={() => ventas()}>Ventas</h2>
                 </li>
             </ul>
-            <div className="tab-content">
+            <div className="row d-flex tab-content">
                 <div className={"tab-pane fade " + login} id="pills-login" role="tabpanel" aria-labelledby="tab-login">
                 {store.alquileres.map((item, index) => {
 					return (
-                    <div key={index} className="row">
-                        <CardFeedAlq className="col-4" ubicacion={item.location} precio={item.price}/>
+                    <div key={index} className="">
+                        <CardFeedAlq className="col-3" ubicacion={item.location} precio={item.price}/>
                     </div>
                     )})}
                 </div>
                 <div className={"tab-pane fade " + register} id="pills-register" role="tabpanel" aria-labelledby="tab-register">
                 {store.ventas.map((item, index) => {
 					return (
-                    <div key={index} className="row">
-                        <CardFeedVen className="col-4" ubicacion={item.location} precio={item.price}/>
+                    <div key={index} className="">
+                        <CardFeedVen ubicacion={item.location} precio={item.price}/>
                     </div>
                     )})}
                 </div>
             </div>
-
-
         </div>
     );
 };
