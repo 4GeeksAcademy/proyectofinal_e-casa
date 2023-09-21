@@ -94,7 +94,9 @@ console.log(store.casa.info_propietario?.user_id);
               </li>
             </div>
 
-            <img src={diego} style={{ width: "50px", height: "50px" }} className="rounded-circle" alt="..." />
+            {store.propietario?.profile_picture == "" ? <img src={diego} style={{ width: "50px", height: "50px" }} className="rounded-circle " alt="..." />:
+
+            <img src={store.casa.info_propietario?.profile_picture}style={{ width: "50px", height: "50px" }} className="rounded-circle" alt="..." />}
           </div>
 
           <li className="list-group-item details-list-group bg-celeste-claro ps-0 ms-0 mt-4">Soy de Uruguay, Sudamérica

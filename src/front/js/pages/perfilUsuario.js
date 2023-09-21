@@ -19,6 +19,7 @@ function Perfil() {
     async function handleSubmit(e) {
         e.preventDefault()
         actions.deleteCuenta()
+        navigate("/login")
 
     }
 
@@ -56,37 +57,28 @@ function Perfil() {
         }
     }
 
-    useEffect(() => {
-        actions.getPerfil();
-    }, []);
 
     return (
 
         <form className='container pb-3 bg-celeste-claro mt-5' onSubmit={handleSubmit}>
             <Link to={"/"}><button type="submit" className="btn text-white bg-azul-oscuro  rounded-pill  my-4"><i class="fa-solid fa-xmark"></i></button></Link>
             <div className='ms-3 d-flex  justify-content-center me-4'>
-                {store.perfil.profile_picture == ""
-                    ? <div>
-                        <div className='justify-content-center'>
-                            <label id="profile_input" onClick={() => widgetRef.current.open()}>
-                                <img src={diego} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." />
-                            </label>
-                            <input id="profile_input" className="invisible d-none" type="file" onChange={e => setFiles(e.target.files)} />
-                        </div>
-                        <strong><p className='m-auto'>{store.perfil.name}</p></strong>
-                        <strong><p className='registro'>{store.perfil.email}</p></strong>
-                    </div>
-                    : <div className='justify-content-center'>
-                        <img src={store.perfil.profile_picture} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." />
-                        <strong><p className='m-auto'>{store.perfil.name}</p></strong>
-                        <strong><p className='registro'>{store.perfil.email}</p></strong>
-                    </div>
-                }
 
+                <div>
+                    <div className='justify-content-center'>
+                        <label id="profile_input" onClick={() => widgetRef.current.open()}>
+                            {store.perfil.profile_picture == "" ? <img src={diego} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." /> :
+                                <img src={store.perfil.profile_picture} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." />}
+                        </label>
+                        <input id="profile_input" className="invisible d-none" type="file" onChange={e => setFiles(e.target.files)} />
+                    </div>
+                    <strong><p className='m-auto'>{store.perfil.name}</p></strong>
+                    <strong><p className='registro'>{store.perfil.email}</p></strong>
+                </div>
 
                 <div className='ms-3   justify-content-center mt-5'>
                     <li className="list-group-item duenio">
-                        <Link to={"/favoritos"}><i className="fa-regular fa-heart"></i></Link><br/>
+                        <Link to={"/favoritos"}><i className="fa-regular fa-heart"></i></Link><br />
                         <Link to={"/editarperfil"}><i className="fa-solid fa-gears my-3"></i></Link>
                     </li>
                 </div>
@@ -121,8 +113,8 @@ function Perfil() {
                     <label htmlFor="exampleInputPassword1" className="form-label">Descripción <i className="fa-solid fa-pencil"></i></label>
                     <input type="text" className="form-control" disabled value='Descripcion' onChange={(e) => setConfpassword(e.target.value)} />
                 </div>
-                <button type="submit" className="text-white btn btn-danger d-grid gap-2 col-6 mx-auto" onClick={handleSubmit}>Eliminar cuenta</button> <br/>
-                
+                <button type="submit" className="text-white btn btn-danger d-grid gap-2 col-6 mx-auto" >Eliminar cuenta</button> <br />
+
             </div>
 
         </form>

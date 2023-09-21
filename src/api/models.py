@@ -82,7 +82,7 @@ class House(db.Model):
             "images": list(map(lambda item: item.serialize(),self.images)),
             "description": self.description,
             "category": self.category,
-            "info_propietario": {"user_id":info_user.serialize()["id"],"name":info_user.serialize()["name"], "lastname":info_user.serialize()["lastname"], "account_creation_date":info_user.serialize()["accountCreationDate"] },#list(map(lambda item: item.serialize(),self.user)),
+            "info_propietario": {"user_id":info_user.serialize()["id"],"name":info_user.serialize()["name"], "lastname":info_user.serialize()["lastname"], "account_creation_date":info_user.serialize()["accountCreationDate"], "profile_picture":info_user.serialize()["profile_picture"] },#list(map(lambda item: item.serialize(),self.user)),
             "location": self.location,
             "numberOfRooms": self.number_of_rooms,
             "numberOfBathrooms": self.number_of_bathrooms,

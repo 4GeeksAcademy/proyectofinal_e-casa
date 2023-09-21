@@ -1,69 +1,133 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../store/appContext';
 import { Link } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 
 function Singup() {
-  const [lastName,setLastName]= useState("")
-  const [firstName,setFirstName]= useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [password, setPassword] = useState("")
-  const [confpassword, setConfpassword] = useState("")
+  // const [lastName,setLastName]= useState("")
+  // const [firstName,setFirstName]= useState("")
+  // const [email, setEmail] = useState("")
+  // const [phone, setPhone] = useState("")
+  // const [password, setPassword] = useState("")
+  // const [confpassword, setConfpassword] = useState(undefined)
   const { store, actions } = useContext(Context)
   const navigate= useNavigate();
+  const confpassword = useRef();
 
   async function handleSubmit(e) {
     e.preventDefault()
-    
-    if (password !== confpassword) {
-      alert('La contraseña no coincide con la confirmacion')
-  }
-  else{
-    let logged= await actions.signup(firstName, lastName, email, password, phone, confpassword)
-    if (logged === true) {
-      navigate("/login")
+  //   console.log(values);
 
-    }
+    
+  if (password !== confpassword) {
+  alert('La contraseña no coincide con la confirmacion')
+    
   }
-  setFirstName("")
-      setLastName("")
-      setEmail("")
-      setPassword("")
-      setConfpassword("")
+  
+}
+  function handleChange(){
+    
+    // setFirstName("")
+    //     setLastName("")
+    //     setEmail("")
+    //     setPassword("")
+    
+    
+  // }
    }
+
+   const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: '',
+      phone:"",
+      password:"",
+      confpassword:"",
+      
+    },
+    validationSchema:
+       Yup.object({
+      firstName: Yup.string()
+        .max(15, 'Debe tener 15 letras o menos')
+        .required('Obligatorio'),
+      lastName: Yup.string()
+        .max(15, 'Debe tener 15 letras o menos')
+        .required('Obligatorio'),
+        phone:Yup.string()
+        .min(9, 'Debe tener 9 caracteres o mas')
+        .required('Obligatorio'),
+      email: Yup.string().email('Invalid email address').required('Obligatorio'),
+      password:Yup.string().min(8,'Debe tener 8 caracteres o mas').required('Obligatorio'),
+      confpassword:Yup.string().min(8,'Debe tener 8 caracteres o mas').required('Obligatorio'),
+      
+            
+            
+    }),
+
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+      actions.signup(values)
+    },
+    
+      
+    
+  });
     
 
   return (
    
-    <form className='container mt-5 bg-white' onSubmit={handleSubmit}>
+    <form className='container mt-5 bg-white' onSubmit={formik.handleSubmit}>
       <h1 className='d-flex justify-content-start mb-4'>Regístrate</h1>
       <div className=''>
     <div className="mb-3 texto-amarillo">
-      <label htmlFor="exampleInputEmail1" className="form-label">Nombre</label>
-      <input type="nombre" className="form-control"  aria-describedby="emailHelp" placeholder='Ingresa tu nombre' onChange={(e) => setFirstName(e.target.value)}/>
+      <label htmlFor="firstName" className="form-label">Nombre</label>
+      <input type="firstName" name="firstName" id="firstName" className="form-control"  aria-describedby="emailHelp" placeholder='Ingresa tu nombre' onChange={formik.handleChange}
+         value={formik.values.firstName}/>
+         {formik.touched.firstName && formik.errors.firstName ? (
+         <div className='text-danger'>{formik.errors.firstName}</div>
+       ) : null}
     </div>
     <div className="mb-3 texto-amarillo">
-      <label htmlFor="exampleInputPassword1" className="form-label">Apellido</label>
-      <input type="apellido" className="form-control"  placeholder='Ingresa tu apellido' onChange={(e) => setLastName(e.target.value)}/>
+      <label htmlFor="lastName" className="form-label">Apellido</label>
+      <input type="lastName" name="lastName" id="lastName" className="form-control"  placeholder='Ingresa tu apellido' onChange={formik.handleChange}
+         value={formik.values.lastName}/>{formik.touched.lastName && formik.errors.lastName ? (
+          <div className='text-danger'>{formik.errors.lastName}</div>
+        ) : null}
     </div>
     <div className="mb-3 texto-amarillo">
-      <label htmlFor="exampleInputPassword1" className="form-label">Email</label>
-      <input type="email" className="form-control"  placeholder='Ingresa tu email' onChange={(e) => setEmail(e.target.value)}/>
+      <label htmlFor="email" className="form-label">Email</label>
+      <input type="email" name="email" id="email" className="form-control"  placeholder='Ingresa tu email' onChange={formik.handleChange}
+         value={formik.values.email}/>{formik.touched.email && formik.errors.email ? (
+          <div className='text-danger'>{formik.errors.email}</div>
+        ) : null}
     </div>
     <div className="mb-3 texto-amarillo">
-      <label htmlFor="exampleInputPassword1" className="form-label">Telefono de contacto</label>
-      <input type="contacto" className="form-control"  placeholder='Ingresa un telefono de contacto' onChange={(e) => setPhone(e.target.value)}/>
+      <label htmlFor="phone" className="form-label">Telefono de contacto</label>
+      <input type="phone" name="phone" id="phone" className="form-control"  placeholder='Ingresa un telefono de contacto' onChange={formik.handleChange}
+         value={formik.values.phone}/>
+         {formik.touched.phone && formik.errors.phone ? (
+          <div className='text-danger'>{formik.errors.phone}</div>
+        ) : null}
     </div>
     <div className="mb-3 texto-amarillo">
-      <label htmlFor="exampleInputPassword1" className="form-label">Contraseña</label>
-      <input type="password" className="form-control"  placeholder='Ingresa una contraseña'onChange={(e) => setPassword(e.target.value)}/>
+      <label htmlFor="password" className="form-label">Contraseña</label>
+      <input type="password" name="password" id="password" className="form-control"  placeholder='Ingresa una contraseña'onChange={formik.handleChange}
+         value={formik.values.password}/>
+         {formik.touched.password && formik.errors.password ? (
+         <div className='text-danger'>{formik.errors.password}</div>
+       ) : null}
     </div>
-    <div className="mb-3 texto-amarillo">
-      <label htmlFor="exampleInputPassword1" className="form-label">Confirmar contraseña</label>
-      <input type="password" className="form-control"  placeholder='Confrima tu contraseña'onChange={(e) => setConfpassword(e.target.value)}/>
-    </div>
+      <div className="mb-3 texto-amarillo"> 
+      <label htmlFor="confpassword" className="form-label">Confirmar contraseña</label>
+      <input type="confpassword" ref={confpassword} name="confpassword" id="confpassword" className="form-control"  placeholder='Confrima tu contraseña'onChange={formik.handleChange} value={formik.values.confpassword}/>
+      {(formik.initialValues.password!=formik.initialValues.confpassword) && (formik.touched.confpassword && formik.errors.confpassword)? (
+         <div className='text-danger'>{formik.errors.confpassword}</div>
+       ) : null}
+    </div>  
     <button type="submit" className="text-white bg-azul-oscuro d-grid gap-2 col-6 mx-auto">Continuar</button>
     </div>
     <div className= "d-flex justify-content-center mt-4">

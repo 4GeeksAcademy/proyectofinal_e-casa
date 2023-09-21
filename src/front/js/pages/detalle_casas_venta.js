@@ -50,8 +50,9 @@ function Detailsventas() {
                 <p className='registro'>{store.casa.info_propietario?.account_creation_date}</p>
               </li>
             </div>
+            {store.propietario?.profile_picture == "" ? <img src={diego} style={{ width: "50px", height: "50px" }} className="rounded-circle " alt="..." />:
 
-            <img src={diego} style={{ width: "50px", height: "50px" }} className="rounded-circle ms-4" alt="..." />
+            <img src={store.casa.info_propietario?.profile_picture} style={{ width: "50px", height: "50px" }} className="rounded-circle ms-4" alt="..." />}
           </div>
 
           <li className="list-group-item bg-celeste-claro mt-4">Soy de Uruguay, Sudamérica

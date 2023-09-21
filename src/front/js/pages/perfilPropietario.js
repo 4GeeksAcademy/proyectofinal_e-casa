@@ -72,7 +72,8 @@ function Perfilprop() {
 
 
                 <div className=' justify-content-center'>
-                    <img src={diego} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." />
+                {store.propietario?.profile_picture == "" ? <img src={diego} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." />:
+                    <img src={store.propietario?.profile_picture} style={{ width: "100px", height: "100px" }} className="rounded-circle " alt="..." />}
                     <strong><p className='m-auto'>{store.propietario?.name}</p></strong>
                     <strong><p className='registro'>{store.propietario?.email}</p></strong>
 
