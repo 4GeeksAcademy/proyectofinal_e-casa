@@ -7,38 +7,22 @@ import * as Yup from 'yup';
 
 
 function Singup() {
-  // const [lastName,setLastName]= useState("")
-  // const [firstName,setFirstName]= useState("")
-  // const [email, setEmail] = useState("")
-  // const [phone, setPhone] = useState("")
-  // const [password, setPassword] = useState("")
-  // const [confpassword, setConfpassword] = useState(undefined)
+  
+  const[coinciden, setCoinciden]=useState(true)
   const { store, actions } = useContext(Context)
   const navigate= useNavigate();
   const confpassword = useRef();
 
   async function handleSubmit(e) {
     e.preventDefault()
-  //   console.log(values);
-
-    
+ 
   if (password !== confpassword) {
   alert('La contraseña no coincide con la confirmacion')
     
   }
   
 }
-  function handleChange(){
-    
-    // setFirstName("")
-    //     setLastName("")
-    //     setEmail("")
-    //     setPassword("")
-    
-    
-  // }
-   }
-
+ 
    const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -69,13 +53,23 @@ function Singup() {
     }),
 
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-      actions.signup(values)
-    },
+      
+      if (values.password !== values.confpassword){
+    
+        setCoinciden(false)
+      }
+      else{
+      actions.signup(values).then(res=>{
+        
+        if (res==true)navigate("/login")
+      })
+    }},
+    
     
       
     
   });
+  
     
 
   return (
@@ -116,15 +110,17 @@ function Singup() {
     <div className="mb-3 texto-amarillo">
       <label htmlFor="password" className="form-label">Contraseña</label>
       <input type="password" name="password" id="password" className="form-control"  placeholder='Ingresa una contraseña'onChange={formik.handleChange}
-         value={formik.values.password}/>
+        value={formik.values.password} />
          {formik.touched.password && formik.errors.password ? (
          <div className='text-danger'>{formik.errors.password}</div>
        ) : null}
     </div>
       <div className="mb-3 texto-amarillo"> 
       <label htmlFor="confpassword" className="form-label">Confirmar contraseña</label>
-      <input type="confpassword" ref={confpassword} name="confpassword" id="confpassword" className="form-control"  placeholder='Confrima tu contraseña'onChange={formik.handleChange} value={formik.values.confpassword}/>
-      {(formik.initialValues.password!=formik.initialValues.confpassword) && (formik.touched.confpassword && formik.errors.confpassword)? (
+      <input type="password" ref={confpassword} name="confpassword" id="confpassword" className="form-control"  placeholder='Confrima tu contraseña'onChange={formik.handleChange} />
+      {!coinciden && <span className='text-danger'>Las contraseñas no coinciden</span>}
+      
+         {formik.touched.confpassword && formik.errors.confpassword ? (
          <div className='text-danger'>{formik.errors.confpassword}</div>
        ) : null}
     </div>  

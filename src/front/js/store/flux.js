@@ -74,7 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-			signup: async (firstName, lastName, email, password, phone, confpassword) => {
+			signup: async ({firstName, lastName, email, password, phone, confpassword}) => {
 
 				try {
 					let data = await axios.post(process.env.BACKEND_URL + "/api/signup", {
