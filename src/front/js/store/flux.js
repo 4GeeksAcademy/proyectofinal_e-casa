@@ -141,7 +141,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			login: async (email, password) => {
+			login: async ({email, password}) => {
 				try {
 					let data = await axios.post(process.env.BACKEND_URL + '/api/login',
 						{
