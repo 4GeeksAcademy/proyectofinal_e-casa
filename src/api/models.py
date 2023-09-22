@@ -13,6 +13,7 @@ class User(db.Model):
     phone_number = db.Column(db.String(30), nullable=False)
     account_creation_date = db.Column(db.String(40), nullable=True)
     is_admin = db.Column(db.Boolean(), nullable=False)
+    description = db.Column(db.String(500), nullable=True)
     usuario_favoritos = db.relationship('Favorites', backref='user', lazy=True)
     
     houses = db.relationship('House', backref='user', lazy=True)
@@ -32,6 +33,7 @@ class User(db.Model):
             "phoneNumber": self.phone_number,
             "is_admin": self.is_admin,
             "accountCreationDate": self.account_creation_date,
+            "description": self.description,
             "usuario_favoritos": list(map(lambda item: item.serialize(),self.usuario_favoritos))
             # do not serialize the password, its a security breach
         }

@@ -26,7 +26,7 @@ export const PanelCtrl = () => {
 
                         {store.perfil.is_admin ?
                             <ul className="dropdown-menu">
-                                <li><Link to={"/"}><p className="dropdown-item m-0"><i className="fa-solid fa-gears"></i> Ver mis propiedades</p></Link></li>
+                                <li><Link to={"/mis-propiedades"}><p className="dropdown-item m-0"><i className="fa-solid fa-gears"></i> Ver mis propiedades</p></Link></li>
                                 <li><Link to={"/upload"}><p className="dropdown-item m-0">Ofrece una propiedad nueva</p></Link></li>
                             </ul> :
                             <ul className="dropdown-menu">

@@ -10,10 +10,8 @@ function Details() {
   const { store, actions } = useContext(Context)
   let param = useParams()
   useEffect(() => {
-      
     actions.getDetalles(param.id)
     actions.getPerfilProp(store.casa.info_propietario?.user_id)
-       
   }, [])
 
 console.log(store.casa.info_propietario?.user_id);

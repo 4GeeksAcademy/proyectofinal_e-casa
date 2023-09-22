@@ -48,18 +48,10 @@ function Perfilprop() {
                 setLoginST("")
             }
         }
-        useEffect(() => { 
-            
-                
+        useEffect(() => {    
             actions.getPerfilProp(datosProp)
             actions.getCasasProp(datosProp)
-           
         }, [])
-       console.log(store.propietario);
-    
-    
-   
-
 
     return (
     
