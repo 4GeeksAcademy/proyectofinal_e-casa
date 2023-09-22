@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import diego from "../../img/diego.jpg";
 import { CardFeedAlq } from "../component/card_feed_alq.jsx"
 import { CardFeedVen } from "../component/card_feed_ven.jsx"
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 
 function Editarperfil() {
@@ -22,38 +24,58 @@ function Editarperfil() {
 
     const { store, actions } = useContext(Context)
     const navigate = useNavigate();
-    let casasVentas= []
-    let casasAlquiler= []
+    let casasVentas = []
+    let casasAlquiler = []
 
-    
+
     async function handleSubmit(e) {
         e.preventDefault()
-        actions.editPerfil(firstName, lastName, email, password, phone, description)
 
-       }
+    }
 
-      
-        useEffect(() => { 
-            const getPerfil=async()=>{
-                
-                await actions.getPerfilProp(store.casa.user_id)
-               await actions.getCasasProp(store.casa.user_id)
-               
+    const formik = useFormik({
+        initialValues: {
+            name: store.perfil.name,
+            lastname: store.perfil.lastname,
+            phoneNumber: store.perfil.phoneNumber,
+            password: store.perfil.password,
+            description:store.perfil.description
+
+        },
+        validationSchema:
+            Yup.object({
+                name: Yup.string()
+                    .min(1, 'No debe estar vacío')
+                ,
+                lastname: Yup.string()
+                    .min(1, 'No debe estar vacío')
+                ,
+                phoneNumber: Yup.string()
+                    .min(9, 'Debe tener 9 caracteres o mas'),
+
+                password: Yup.string().min(8, 'Debe tener 8 caracteres o mas'),
+                description:Yup.string().min(8,"Debe tener 8 caracteres o mas")
+
+
+            }),
+
+        onSubmit: values => {   
+            console.log(values);
+            actions.editPerfil(values).then(res => {
+
+                if (res.msg == "Tu perfil fue editado con éxito")
+                    navigate("/perfil")
+
             }
+            )
+        }});
 
-            getPerfil();
-            if (!actions.validToken()) navigate("/");
-        }, [])
-       
-    
-    
-   
 
 
     return (
-    
-        <form className='container pb-3 bg-celeste-claro mt-5' onSubmit={handleSubmit}>
-            <Link to={"/"}><button type="submit" className="btn text-white bg-azul-oscuro  rounded-pill  my-4"><i className="fa-solid fa-xmark"></i></button></Link>
+
+        <form className='container pb-3 bg-celeste-claro mt-5' onSubmit={formik.handleSubmit}>
+            <Link to={"/perfil"}><button  className="btn text-white bg-azul-oscuro  rounded-pill  my-4"><i className="fa-solid fa-xmark"></i></button></Link>
 
             <div className='ms-3 d-flex  justify-content-center me-4'>
 
@@ -65,10 +87,10 @@ function Editarperfil() {
                     <strong><p className='m-auto'>{store.perfil.name}</p></strong>
                     <strong><p className='registro'>{store.perfil.email}</p></strong>
 
-                    
+
                 </div>
 
-               
+
             </div>
 
 
@@ -77,31 +99,50 @@ function Editarperfil() {
 
             <div className=''>
                 <div className="mb-3 texto-amarillo">
-                    <label htmlFor="exampleInputEmail1" className="form-label">Nombre </label>
-                    <input type="nombre" className="form-control"  aria-describedby="emailHelp" onChange={(e) => setFirstName(e.target.value)} />
+                    <label htmlFor="name" className="form-label">Nombre </label>
+                    <input type="name" id="name" name="name" className="form-control" aria-describedby="emailHelp" onChange={formik.handleChange}
+                        value={formik.values.name} />
+                    {formik.touched.name && formik.errors.name ? (
+                        <div className='text-danger'>{formik.errors.name}</div>
+                    ) : null}
                 </div>
                 <div className="mb-3 texto-amarillo">
-                    <label htmlFor="exampleInputPassword1" className="form-label">Apellido </label>
-                    <input type="apellido" className="form-control"  onChange={(e) => setLastName(e.target.value)} />
+                    <label htmlFor="lastname" className="form-label">Apellido </label>
+                    <input type="lastname" id="lastname" name="lastname" className="form-control" onChange={formik.handleChange}
+                        value={formik.values.lastname} />{formik.touched.lastname && formik.errors.lastname ? (
+                            <div className='text-danger'>{formik.errors.lastname}</div>
+                        ) : null}
                 </div>
-                
+
                 <div className="mb-3 texto-amarillo">
-                    <label htmlFor="exampleInputPassword1" className="form-label">Telefono de contacto </label>
-                    <input type="contacto" className="form-control"   onChange={(e) => setPhone(e.target.value)} />
+                    <label htmlFor="phoneNumber" className="form-label">Telefono de contacto </label>
+                    <input type="phoneNumber" id="phoneNumber" name="phoneNumber" className="form-control" onChange={formik.handleChange}
+                        value={formik.values.phoneNumber} />
+                    {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+                        <div className='text-danger'>{formik.errors.phoneNumber}</div>
+                    ) : null}
                 </div>
                 <div className="mb-3 texto-amarillo">
-                    <label htmlFor="exampleInputPassword1" className="form-label">Contraseña</label>
-                    <input type="password" className="form-control"  onChange={(e) => setPassword(e.target.value)} />
+                    <label htmlFor="password" className="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" className="form-control" onChange={formik.handleChange}
+                        value={formik.values.password} />
+                    {formik.touched.password && formik.errors.password ? (
+                        <div className='text-danger'>{formik.errors.password}</div>
+                    ) : null}
                 </div>
-                
+
                 <div className="mb-3 texto-amarillo">
-                    <label htmlFor="exampleInputPassword1" className="form-label">Descripción</label>
-                    <input type="text" className="form-control" onChange={(e) => setDescription(e.target.value)} />
+                    <label htmlFor="description" className="form-label">Descripción</label>
+                    <input type="description"id="description" name="description" className="form-control"onChange={formik.handleChange}
+                        value={formik.values.description} />
+                    {formik.touched.description && formik.errors.description ? (
+                        <div className='text-danger'>{formik.errors.description}</div>
+                    ) : null}
                 </div>
-                <button className="btn text-white bg-azul-oscuro" >Aceptar</button>
+                <button className="btn text-white bg-azul-oscuro" type='submit' >Confirmar</button>
             </div>
-           
-           
+
+
             {/* <div className="text-white my-5">
             
             <ul className="nav-container nav nav-pills nav-justified mt-5" id="ex1" role="tablist">
@@ -138,15 +179,15 @@ function Editarperfil() {
             </div>
             
         </div> */}
-                
-            
-           
-        
-       
+
+
+
+
+
 
         </form>
 
     );
-                    }
+}
 
 export default Editarperfil;
