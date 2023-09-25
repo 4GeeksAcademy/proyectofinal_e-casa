@@ -36,6 +36,27 @@ body{
 }
 
 
+/* FILTER STYLE */
+
+#minPriceSliderInfo {
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    padding: 4px 8px;
+    margin: 0;
+}
+
+#maxPriceSliderInfo {
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    padding: 4px 8px;
+    margin: 0;
+}
 
 .texto-amarillo{
     color: #fdbe34;
@@ -50,6 +71,10 @@ body{
 }
 
 .bg-azul-oscuro{
+    background-color: #0b409c;
+}
+
+.bg-azul-oscuro:hover {
     background-color: #10316b;
 }
 
@@ -83,9 +108,11 @@ body{
 }
 
 @media all and (max-width: 900px) {
+
     .nav-container {
         margin: 0 20px;
     }
+
     .container-alquileres {
         margin: 0 20px;
     }
@@ -96,9 +123,12 @@ body{
     .hero-image {
         height: 200px !important;
     }
+
     .nav-container {
         margin: 0 8px;
     }
+
+
     .container-alquileres {
         margin: 0 8px;
     }

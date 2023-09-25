@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Context } from "../store/appContext";
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export const EditProp = () => {
     const { store, actions } = useContext(Context);
-
+    const navigate = useNavigate();
     const param = useParams()
 
     const [imagesUrl, setImagesUrl] = useState([]);
@@ -20,8 +20,10 @@ export const EditProp = () => {
             cloudName: process.env.CLOUDNAME,
             uploadPreset: process.env.UPLOAD_PRESET
         }, function (error, result) {
+            console.log(result);
             if (result?.event === "success") {
                 setImagesUrl((imagesUrl) => {
+                    console.log(imagesUrl);
                     return [...imagesUrl, result.info.secure_url]
                 })
             }
@@ -48,8 +50,6 @@ export const EditProp = () => {
          alquilerBtn = category.current.childNodes[0].childNodes[0];
          ventaBtn = category.current.childNodes[1].childNodes[0];
 
-         console.log(alquilerBtn.value);
-         console.log(ventaBtn.checked);
         if (alquilerBtn.checked) {
             categorySelected = alquilerBtn.value;
         } else if (ventaBtn.checked) {
@@ -104,7 +104,7 @@ export const EditProp = () => {
 
         const formData = new FormData();
         formData.append('json_data', JSON.stringify({
-            // imagesUrl,
+            imagesUrl: imagesUrl,
             title: title.current.value,
             category: categorySelected,
             description: description.current.value,
@@ -113,8 +113,8 @@ export const EditProp = () => {
             number_of_bathrooms: number_of_bathrooms.current.value,
             wifi: wifiSelected,
             parking: parkingSelected,
-            // virified_account: true,
             price: price.current.value,
+            // virified_account: true,
         }));
 
         const options = {
@@ -123,13 +123,13 @@ export const EditProp = () => {
             method: "PUT",
         }
 
+        console.log(formData.imagesUrl);
         try {
-            const saveImage = async () => {
+            const uploadProp = async () => {
                 let response = await fetch(process.env.BACKEND_URL + "/api/post/" + id, options)
                 console.log(response);
-                console.log(formData.category);
             }
-            saveImage();
+            uploadProp();
         } catch (error) {
             console.log(error);
         }
@@ -142,7 +142,7 @@ export const EditProp = () => {
             <button className="btn btn-primary mt-5 mx-auto" onClick={() => widgetRef.current.open()}>
                 SUBIR IMAGEN
             </button>
-            <form onSubmit={(e)=>{e.preventDefault(); uploadImage(param.id);}} className="d-flex flex-column align-items-center mt-4">
+            <form onSubmit={(e)=>{e.preventDefault(); uploadImage(param.id); navigate("/mis-propiedades")}} className="d-flex flex-column align-items-center mt-4">
                 <div className="mb-3 w-50">
                     <label htmlFor="title" className="form-label texto-amarillo">Titulo</label>
                     <input type="text" className="form-control bg-celeste-claro border-bottom border-top-0 border-end-0 border-start-0" id="title" aria-describedby="emailHelp" ref={title} />

@@ -19,6 +19,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// ]
 			propietario: [],
 			alquileres: [],
+			filterRent: [],
+			filterSales: [],
 			ventas: [],
 			casa: {
 				"category": "Venta",
@@ -38,7 +40,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			auth: false,
 			perfil: {},
 			favoritos: [],
-			casaPropietario:[],
+			casaPropietario: [],
 		},
 		actions: {
 
@@ -78,14 +80,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				try {
 					let data = await axios.post(process.env.BACKEND_URL + "/api/signup", {
-
 						"name": firstName,
 						"lastname": lastName,
 						"email": email,
 						"phone_number": phone,
 						"password": password,
 						"is_admin": false
-
 					})
 
 					return true;
@@ -100,9 +100,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			},
-
-
-
 			validToken: async () => {
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/valid_token',
@@ -120,7 +117,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
-
 			getPerfil: async () => {
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/perfil',
@@ -162,17 +158,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
-
 			logout: async () => {
 				localStorage.removeItem('token')
 				setStore({ perfil: {} })
 				setStore({ auth: false })
 			},
-
 			getAlquileres: async () => {
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/gethouses/rent')
-					setStore({ alquileres: data.data.results });
+
+					const orderByPriority = data.data.results.sort((a, b) => {
+						if (b.priority > a.priority) {
+							return 1;
+						} else if (b.priority < a.priority) {
+							return -1;
+						}
+						return 0;
+					})
+					setStore({ alquileres: orderByPriority });
+					setStore({ orderRentItems: data.data.results });
 					console.log(data.data.results);
 				} catch (error) {
 					console.log(error);
@@ -181,44 +185,72 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// }
 					return false
 				}
-
 			},
 			getVentas: async () => {
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/gethouses/sell')
-					setStore({ ventas: data.data.results });
-					console.log(data.data.results);
+					const orderByPriority = data.data.results.sort((a, b) => {
+						if (b.priority > a.priority) {
+							return 1;
+						} else if (b.priority < a.priority) {
+							return -1;
+						}
+						return 0;
+					})
+					setStore({ ventas: orderByPriority });
+					setStore({ orderSellItems: data.data.results });
+					return true;
 				} catch (error) {
 					console.log(error);
-					// if (error.response.status === 404) {
-					// 	alert(error.response.data.msj)
-					// }
-					return false
+					return false;
 				}
 			},
+			filterRentByPrice: (minPriceSlider, maxPriceSlider) => {
+				const rentalFiltered = getStore().alquileres.filter(item => (
+					item.price > minPriceSlider && item.price < maxPriceSlider && item
+				))
 
+				const orderSalesByPrice = rentalFiltered.sort((a, b) => {
+					if (a.price > b.price ) {
+						return 1;
+					} else if (a.price < b.price ) {
+						return -1;
+					}
+					return 0;
+				})
+				setStore({ filterRent: orderSalesByPrice });
+			},
+			filterSalesByPrice: (minPriceSlider, maxPriceSlider) => {
+				const salesFiltered = getStore().ventas.filter(item => (
+					item.price > minPriceSlider && item.price < maxPriceSlider && item
+				))
+
+				const orderSalesByPrice = salesFiltered.sort((a, b) => {
+					if (a.price > b.price ) {
+						return 1;
+					} else if (a.price < b.price ) {
+						return -1;
+					}
+					return 0;
+				})
+				setStore({ filterSales: orderSalesByPrice });
+			},
 			getDetalles: async (id) => {
-				
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/gethouse/' + id)
 					setStore({ casa: data.data.results });
 					// setStore({propietraio2: data.data.results.info_propietario})
 					console.log(data.data.results);
-					
+
 				} catch (error) {
 					console.log(error);
 					// if (error.response.status === 404) {
 					// 	alert(error.response.data.msj)
 					// }
 					return false
-
-
 				}
-
 			},
-
 			getFavoritos: async () => {
-
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/usuario/favorito',
 						{
@@ -230,7 +262,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log(error.response);
 					// if (error.response.status === 404) {
-						setStore({"favoritos": error.response.data.msg})
+					setStore({ "favoritos": error.response.data.msg })
 					// }
 					return false
 
@@ -239,8 +271,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getPerfilProp: async (id) => {
 				console.log(id);
-				if(id){
-				localStorage.setItem("prop_id", getStore().casa.info_propietario?.user_id)}
+				if (id) {
+					localStorage.setItem("prop_id", getStore().casa.info_propietario?.user_id)
+				}
 
 				try {
 					let data = await axios.get(process.env.BACKEND_URL + '/api/user/' + localStorage.getItem('prop_id'))
@@ -248,7 +281,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(data);
 				} catch (error) {
 					console.log(error);
-					
+
 					return false
 				}
 
@@ -260,7 +293,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(data);
 				} catch (error) {
 					console.log(error);
-					
+
 					return false
 				}
 
@@ -268,7 +301,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			deleteFavoritos: async (casa_id) => {
 				try {
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + '/api/favoritos/house/'+ casa_id, {
+					const resp = await fetch(process.env.BACKEND_URL + '/api/favoritos/house/' + casa_id, {
 						method: "DELETE",
 						headers: {
 							"Authorization": "Bearer " + localStorage.getItem('token')
@@ -286,9 +319,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(localStorage.getItem('token'));
 				
 				try {
-					
-					const resp = await fetch(process.env.BACKEND_URL + '/api/user',{
-						
+
+					const resp = await fetch(process.env.BACKEND_URL + '/api/user', {
 						method: "PUT",
 						headers: {
 							"Authorization": "Bearer " + localStorage.getItem('token')
@@ -301,10 +333,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"password": password,
 							"description": description
 
-						
-					})})
+
+						})
+					})
 					const data = await resp.json()
-					
+
 					return data;
 				} catch (error) {
 					// console.log("Error loading message from backend", error)
@@ -328,7 +361,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			
+
 
 		}
 	}

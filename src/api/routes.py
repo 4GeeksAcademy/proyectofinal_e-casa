@@ -77,6 +77,7 @@ def crear_registro():
         name = request.json.get("name", None),
         lastname = request.json.get("lastname", None),
         phone_number = request.json.get("phone_number", None),
+        premium_level = 0,
         email = request.json.get("email", None),
         password = hashed_password,
         is_admin = request.json.get("is_admin", None),
@@ -163,7 +164,31 @@ def eliminar_perfil():
         return jsonify({"msg": "Tu perfil fue eliminado con éxito"}), 200
     
     return jsonify({"msg": "No se encontró tu perfil"}), 404
+
+
+@api.route("/set_new_plan", methods=["PUT"])
+@jwt_required()
+def set_new_plan():
+    request_body = request.get_json(force=True)
+    current_user_email = get_jwt_identity()
+
+    user = User.query.filter_by(email = current_user_email).first()
+
+    if user is None:
+        return jsonify({ "msg": "El usuario no existe" }), 404
     
+    user.premium_level = request_body["planValue"]
+    db.session.commit()
+
+    # SET HOUSES PRIORITY
+
+    houses = House.query.filter_by(user_id = user.id).all()
+
+    for house in houses:
+        house.priority = user.premium_level
+        db.session.commit()
+
+    return jsonify({ "msg": "¡Tu plan se actualizó! :)" })
 
 @api.route("/profile_picture", methods=["POST"])
 @jwt_required()
@@ -281,7 +306,9 @@ def editar_posteos(house_id):
     user = User.query.filter_by(email = current_user_email).first()
    
     post_query = House.query.filter_by(user_id=user.id, id=house_id).first()
-    print(post_query)
+
+    image_query = Image.query.filter_by(house_id=house_id).all()
+    
      
     #  validamos que exista una casa
     if post_query is None:
@@ -293,8 +320,10 @@ def editar_posteos(house_id):
         post_query.description = json_data["description"]
     if "category" in json_data:
         post_query.category = json_data["category"]
-    # if "image_id" in body:
-    #     casa_query.image_id = body["image_id"]
+    if json_data["imagesUrl"] is not None:
+        for i in range(0,len(json_data['imagesUrl'])):
+            image_query[i].url=json_data['imagesUrl'][i]
+            db.session.commit()
     if "location" in json_data:
         post_query.location = json_data["location"]
     if "number_of_rooms" in json_data:
@@ -310,6 +339,9 @@ def editar_posteos(house_id):
            
     
     db.session.commit()
+
+    
+
     return jsonify({"msg": "Tus cambios ya quedaron"}), 200
 
 
@@ -396,6 +428,7 @@ def save_post():
         title=json_data.get("title", None),
         category=json_data.get("category", None),
         description=json_data.get("description", None),
+        priority=user.premium_level,
         user_id=user_id,
         location=json_data.get("location", None),
         number_of_rooms=json_data.get("number_of_rooms", None),
